@@ -36,7 +36,7 @@ def GeneratePaths(spot, process, maturity, nPoints, nPaths, correlation):
     return result
 
 
-# Mesmo processo para todos, mas podemos mudar processo a processo
+
 def GBM_v2(seed, mu, sig, dim, spots, maturity, nPoints, nPaths, correlation=None):
     np.random.seed(seed)
     one_process = lambda s, dt, e: s + mu * s * dt + sig * s * np.sqrt(dt) * e
@@ -111,17 +111,16 @@ def PS_Hip(seed, mu, sig, p,  maturity, nPoints, nPaths, randstart = False):
     return x, t
 
 def PS_Hip_test_data(seed, mu, sig, x0,  maturity, nPoints, nPaths, mu_pr = 'Nada', p0=0.5):
-    # returns x-original pr, p - probability pr, t - time
-    # x0 - valor inicial do x_process, p0 - probabilidade apriori
-    np.random.seed(seed) #x0 = 3; p0 = 0.5; maturity = T
+
+    np.random.seed(seed)
     if mu_pr =='Nada':
        mu_pr = mu
     x_process = lambda s, dt, e: s + mu_pr * dt + sig * np.sqrt(dt) * e
     x = GeneratePaths_onedim(spot=x0, process=x_process,
                              maturity=maturity, nPoints=nPoints, nPaths=nPaths)
     x = np.reshape(x, newshape=(nPaths, nPoints))
-    dx = x[:, 1:] - x[:, :-1] # delta do projecto original
-    p = np.zeros(shape=(nPaths, nPoints)) # iniciacão do processo de probabilidade
+    dx = x[:, 1:] - x[:, :-1]
+    p = np.zeros(shape=(nPaths, nPoints)) 
     p[:,0] = p0*np.ones(shape=(nPaths,))
     dt = maturity / (nPoints-1)
     for ii in range(nPoints-1):
