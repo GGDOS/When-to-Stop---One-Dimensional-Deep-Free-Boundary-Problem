@@ -33,21 +33,6 @@ def GeneratePaths(spot, process, maturity, nPoints, nPaths, correlation):
                         # use SDE lambdas (inputs: previous spot, dt, current random variate)
                         result[k, i, j] = paths[k, j] = process[k](paths[k, j - 1], dt, paths[k, j])
 
-    # case: no given correlation matrix, create paths for a single process
-    else:
-        print('One dimensional and uncorrelated to be included')
-        # result = np.zeros(shape=(1, nPaths, nPoints))
-        # # loop through number of paths
-        # for i in range(nPaths):
-        #     # create one set of random variates for one process
-        #     path = np.random.normal(size=nPoints)
-        #     # first path value is always current spot price
-        #     result[0, i, 0] = path[0] = spot
-        #     # loop through number of steps
-        #     for j in range(nPoints):
-        #         if (j > 0):
-        #             # use SDE lambda (inputs: previous spot, dt, current random variate)
-        #             result[0, i, j] = path[j] = process(path[j - 1], dt, path[j])
     return result
 
 
@@ -72,13 +57,6 @@ def Am_put_geom(K, x):
         tf.math.subtract(K, x2), 0)
     return g
 
-
-def mydate():
-    today = date.today()
-    d1 = today.strftime("%d-%m-%Y")
-    now = datetime.now()
-    dt_string = '-' + now.strftime("%H:%M")
-    return "w_" + d1 + dt_string
 
 
 def GeneratePaths_onedim(spot, process, maturity, nPoints, nPaths):
@@ -116,14 +94,6 @@ def GeneratePaths_onedim_rand(process, maturity, nPoints, nPaths):
                 #if np.maximum(path[j])
     return result
 
-'CEV one dimensional'
-def CEV_onedim(seed, mu, delta, beta, spot, maturity, nPoints, nPaths):
-    np.random.seed(seed)
-    one_process = lambda s, dt, e: s + mu * s * dt + delta * (s ** (beta + 1)) * np.sqrt(dt) * e
-    x = GeneratePaths_onedim(spot, one_process, maturity, nPoints, nPaths)
-    x = np.reshape(x, newshape=(nPaths, nPoints))
-    t = np.linspace(0, maturity, nPoints)
-    return x, t
 
 
 'P&Shiryaev - eq. (21.0.9)'
